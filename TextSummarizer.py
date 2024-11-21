@@ -9,9 +9,8 @@ import copy
 import csv
 import time
 
+# Check if GPU is available
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-print(f"Using device: {device}")
-
 
 # Define the clones utility
 def clone_module(module, N):
@@ -263,8 +262,7 @@ def train_model_with_logging(experiment_number, params, logger):
     total_train_loss = 0
     for epoch in range(params["epochs"]):
         for src, tgt in train_loader:
-            src, tgt = src.to(device), tgt.to(device)
-            # src, tgt = src.cuda(), tgt.cuda()
+            src, tgt = src.cuda(), tgt.cuda()
             optimizer.zero_grad()
             src_mask = (src != 0).unsqueeze(-2).to(device)
             tgt_input = tgt[:, :-1]
@@ -281,9 +279,8 @@ def train_model_with_logging(experiment_number, params, logger):
     total_val_loss = 0
     with torch.no_grad():
         for src, tgt in val_loader:
-            # src, tgt = src.cuda(), tgt.cuda()
-            src, tgt = src.to(device), tgt.to(device)
-            src_mask = (src != 0).unsqueeze(-2).to(device)
+            src, tgt = src.cuda(), tgt.cuda()
+            src_mask = (src != 0).unsqueeze(-2)
             tgt_input = tgt[:, :-1]
             tgt_output = tgt[:, 1:]
             tgt_mask = (tgt_input != 0).unsqueeze(-2).to(device)
