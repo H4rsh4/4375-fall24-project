@@ -8,6 +8,7 @@ import math
 import copy
 import csv
 import time
+import torch.nn.functional as F
 
 # Check if GPU is available
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
