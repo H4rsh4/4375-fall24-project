@@ -246,8 +246,24 @@ def train_model_with_logging(experiment_number, params, logger):
     val_dataset = val_dataset.map(preprocess_data, batched=True)
 
     # Adjust DataLoader
-    train_loader = DataLoader(dataset, batch_size=params["batch_size"], shuffle=True, collate_fn=lambda x: (torch.stack([d['input_ids'] for d in x]), torch.stack([d['target_ids'] for d in x])))
-    val_loader = DataLoader(val_dataset, batch_size=params["batch_size"], shuffle=False, collate_fn=lambda x: (torch.stack([d['input_ids'] for d in x]), torch.stack([d['target_ids'] for d in x])))
+    train_loader = DataLoader(
+        dataset, 
+        batch_size=params["batch_size"], 
+        shuffle=True, 
+        collate_fn=lambda x: (
+            torch.stack([torch.tensor(d['input_ids']) for d in x]), 
+            torch.stack([torch.tensor(d['target_ids']) for d in x])
+        )
+    )
+    val_loader = DataLoader(
+        val_dataset, 
+        batch_size=params["batch_size"], 
+        shuffle=False, 
+        collate_fn=lambda x: (
+            torch.stack([torch.tensor(d['input_ids']) for d in x]), 
+            torch.stack([torch.tensor(d['target_ids']) for d in x])
+        )
+    )
 
     # Model
     src_vocab = tokenizer.vocab_size
